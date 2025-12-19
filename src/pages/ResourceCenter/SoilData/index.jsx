@@ -1,0 +1,1 @@
+export default function AgroSoilData(){return <>Soil Data</>}
