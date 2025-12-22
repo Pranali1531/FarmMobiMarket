@@ -40,6 +40,7 @@ import MasterLearningsSubGroup from "@/pages/Master/LearningSubGroup";
 import MasterLearningVideo from "@/pages/Master/LearningVideo";
 import Crop from "@/pages/Master/Crop";
 import Variety from "@/pages/Master/Variety";
+import Unit from "@/pages/Master/Unit";
 
 const componentMap = {
   DashboardOverview,
@@ -64,7 +65,8 @@ const componentMap = {
   MasterLearningsSubGroup,
   MasterLearningVideo,
   Crop,
-  Variety
+  Variety,
+  Unit,
 };
 const ComingSoon = () => <div>Coming Soon...</div>;
 

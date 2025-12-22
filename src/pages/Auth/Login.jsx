@@ -69,6 +69,13 @@ const staticMenuJson = [
         route: "/master/varieties",
         component: "Variety",
       },
+
+      {
+        name: "Unit",
+        key: "unit",
+        route: "/master/units",
+        component: "Unit",
+      },
       {
         name: "Products",
         key: "products",
