@@ -13,39 +13,26 @@ import { useSelector } from "react-redux";
 import { getCropApi } from "@/api/cropMaster";
 
 
-export default function VarietyForm({ mode, cropData, onBack }) {
-
-
-  //console.log(mode);
+export default function VarietyForm({ mode, varietyData, onBack }) {
 
   const user = useSelector((state) => state.auth.user);
 
   // ================= FORM STATE =================
   const [form, setForm] = useState({
     cropTypeId: "",
-    cropName: "",
+    cropId: "",
     varietyName: "",
-    cropCode: "",
+    varietyCode: "",
     cropDuration: "",
-    cropProduction: "",
-    cropUnit: "",
-    avgDays: "",
-    cropProfileUrl: "",
-    multipleHarvestCycle: false,
-
+    productionPerArea: "",
+    productionUnitId: "",
+    avgDaysToHarvest: "",
   });
-
-  // ================= IMAGE STATE =================
-  const [thumbnail, setThumbnail] = useState(null);
-  const [preview, setPreview] = useState(cropData?.cropProfileUrl || null);
 
   const [units, setUnits] = useState([]);
   const [cropType, setCropType] = useState([]);
   const [crops, setCrops] = useState([]);
-    const [filtredCrops, setFiltredCrops] = useState([]);
-
-
-
+  const [filtredCrops, setFiltredCrops] = useState([]);
 
 
   useEffect(() => {
@@ -106,59 +93,18 @@ export default function VarietyForm({ mode, cropData, onBack }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-
-  const handleCheckboxChange = (e) => {
-    setForm({
-      ...form,
-      multipleHarvestCycle: e.target.checked,
-    });
-  };
-
-  const handleUpload = async (e) => {
-    const file = e.target.files[0];
-    const folder = "variety";
-    if (!file) return;
-
-    const localPreview = URL.createObjectURL(file);
-    setPreview(localPreview);
-
-    try {
-      const data = await imageUpload(file, folder);
-      if (data || data.url) {
-        setForm((prev) => ({
-          ...prev,
-          cropProfileUrl: data.url,
-        }));
-        resolveFileUrl(data.url);
-      }
-    } catch (error) {
-      console.error(error);
-      enqueueSnackbar("Image upload failed", { variant: "error" });
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (preview?.startsWith("blob:")) {
-        URL.revokeObjectURL(preview);
-      }
-    };
-  }, [preview]);
-
-
   const handleSubmit = async () => {
     const payload = {
-      cropTypeId: form.cropTypeId,
+      cropTypeId: parseInt(form.cropTypeId),
       cropId: form.cropId,
       varietyName: form.varietyName,
-      varityNo: form.varityCode,
+      varietyCode: form.varietyCode,
       cropDuration: form.cropDuration,
-      avgDaysToHarvest:form.avgDaysToHarvest,
-      productionPerArea: form.cropProduction,
-      productionUnitId: form.cropUnit,
-      avgDays: form.avgDays,
-      cropProfileUrl: form.cropProfileUrl,
-      multipleHarvestCycle: form.multipleHarvestCycle,
+      avgDaysToHarvest: form.avgDaysToHarvest,
+      productionPerArea: form.productionPerArea,
+      productionUnitId: parseInt(form.productionUnitId),
+
+
       status: "1",
       orgId: user.orgId,
     };
@@ -166,11 +112,11 @@ export default function VarietyForm({ mode, cropData, onBack }) {
       payload.createdBy = user.userId;
     }
     if (mode === "edit") {
-      payload.cropId = cropData.cropId;
+      payload.varietyId = varietyData.varietyId;
       payload.modifiedBy = user.userId;
     }
 
-  //  console.log(payload);
+    console.log(payload);
 
     try {
       const res =
@@ -192,47 +138,40 @@ export default function VarietyForm({ mode, cropData, onBack }) {
       });
     }
 
-
-
   };
 
-  useEffect(() => { }, [preview, form.cropProfileUrl]);
+
 
   useEffect(() => {
-    if (mode === "edit" && cropData && !preview) {
+    if (mode === "edit" && varietyData) {
 
 
-  //    console.log(cropData);
+    //  console.log(varietyData);
 
       const filterdUnits = units?.filter((type) => type.unitTypeName == "Weight") || []
       setUnits(filterdUnits);
 
       setForm({
-        cropTypeId: cropData?.cropTypeId || "",
-        varietyName: cropData?.varietyName || "",
-        cropName: cropData?.cropName || "",
-        cropCode: cropData?.cropCode || "",
-        cropDuration: cropData?.cropDuration || "",
-        cropProduction: cropData?.productionPerArea || "",
-        cropUnit: cropData?.productionUnitId || "",
-        avgDays: cropData?.avgDays || "",
-        cropProfileUrl: cropData?.cropProfileUrl || "",
-        multipleHarvestCycle: cropData?.multipleHarvestCycle || false,
-
-
+        cropTypeId: varietyData?.cropTypeId || "",
+        cropId: varietyData?.cropId || "",
+        varietyName: varietyData?.varietyName || "",
+        varietyCode: varietyData?.varietyCode || "",
+        cropDuration: varietyData?.cropDuration || "",
+        productionPerArea: varietyData?.productionPerArea || "",
+        productionUnitId: varietyData?.productionUnitId || "",
+        avgDaysToHarvest: varietyData?.avgDaysToHarvest || "",
       })
-      const imageUrl = resolveFileUrl(cropData.cropProfileUrl);
-      setPreview(imageUrl);
+
 
 
     }
-  }, [mode, cropData])
+  }, [mode, varietyData])
 
   useEffect(() => {
 
     const filterdCrops = crops.filter((itm) => itm.cropTypeId == form.cropTypeId)
 
- //   console.log(filterdCrops);
+    //   console.log(filterdCrops);
     setFiltredCrops(filterdCrops);
 
   }, [form.cropTypeId])
@@ -277,8 +216,8 @@ export default function VarietyForm({ mode, cropData, onBack }) {
             Crop
           </MDTypography>
           <select
-            name="cropName"
-            value={form.cropName}
+            name="cropId"
+            value={form.cropId}
             onChange={handleChange}
             style={inputStyle}
           >
@@ -311,9 +250,9 @@ export default function VarietyForm({ mode, cropData, onBack }) {
           </MDTypography>
           <input
             type="text"
-            placeholder="Variety Code *"
-            name="cropCode"
-            value={form.cropCode}
+            placeholder="Variety Number*"
+            name="varietyCode"
+            value={form.varietyCode}
             onChange={handleChange}
             style={inputStyle}
           />
@@ -341,8 +280,8 @@ export default function VarietyForm({ mode, cropData, onBack }) {
           <input
             type="text"
             placeholder="Production/Area *"
-            name="cropProduction"
-            value={form.cropProduction}
+            name="productionPerArea"
+            value={form.productionPerArea}
             onChange={handleChange}
             style={inputStyle}
           />
@@ -355,8 +294,8 @@ export default function VarietyForm({ mode, cropData, onBack }) {
             Unit
           </MDTypography>
           <select
-            name="cropUnit"
-            value={form.cropUnit}
+            name="productionUnitId"
+            value={form.productionUnitId}
             onChange={handleChange}
             style={inputStyle}
           >
@@ -375,59 +314,16 @@ export default function VarietyForm({ mode, cropData, onBack }) {
           <input
             type="text"
             placeholder="Avg Days To Harvest *"
-            name="avgDays"
-            value={form.avgDays}
+            name="avgDaysToHarvest"
+            value={form.avgDaysToHarvest}
             onChange={handleChange}
             style={inputStyle}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
 
-          <MDTypography variant="caption" fontWeight="medium" >
-            Multiple Harvest Cycle
-          </MDTypography>
-          <MDBox>
-            <Checkbox />
-          </MDBox>
-        </Grid>
       </Grid>
 
-      {/* IMAGE UPLOAD */}
-      <MDBox mt={4}>
-        <MDTypography variant="button" fontWeight="medium" mb={1}>
-          Crop Image
-        </MDTypography>
 
-        <MDBox
-          component="label"
-          sx={{
-            width: 140,
-            height: 140,
-            borderRadius: "50%",
-            border: "2px dashed #ccc",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-          }}
-        >
-          {preview ? (
-            <img
-              src={preview}
-              alt="preview"
-              style={{
-                width: "100%",
-                height: "100%",
-                borderRadius: "50%",
-                objectFit: "cover",
-              }}
-            />
-          ) : (
-            <Icon fontSize="large">cloud_upload</Icon>
-          )}
-          <input type="file" hidden accept="image/*" onChange={handleUpload} />
-        </MDBox>
-      </MDBox>
 
       {/* BUTTONS */}
       <MDBox mt={4} textAlign="right">

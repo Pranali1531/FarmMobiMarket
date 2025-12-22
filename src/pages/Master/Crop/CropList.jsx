@@ -188,7 +188,7 @@ const user = useSelector((state) => state.auth.user);
       try {
         const res = await deleteCropApi(id);
   
-        enqueueSnackbar(res?.message || "Learning Group deleted successfully", {
+        enqueueSnackbar(res?.message || "Crop deleted successfully", {
           variant: "success",
         });
   
@@ -199,7 +199,7 @@ const user = useSelector((state) => state.auth.user);
     };
 
     const confirmDeleteSnackbar = (id) => {
-        enqueueSnackbar("Are you sure you want to delete this Learning Group?", {
+        enqueueSnackbar("Are you sure you want to delete this Crop?", {
           variant: "default",
           persist: true,
           action: (snackbarId) => (

@@ -4,20 +4,20 @@ import VarietyForm from "./VarietyForm";
 
 export default function Variety() {
     const [mode, setMode] = useState("list");
-    const [editingGroup, setEditingGroup] = useState(null);
+    const [editingVariety, setEditingVariety] = useState(null);
 
     const handleAdd = () => {
-        setEditingGroup(null);
+        setEditingVariety(null);
         setMode("add");
     };
 
-    const handleEdit = (group) => {
-        setEditingGroup(group);
+    const handleEdit = (variety) => {
+        setEditingVariety(variety);
         setMode("edit");
     };
 
     const handleBack = () => {
-        setEditingGroup(null);
+        setEditingVariety(null);
         setMode("list");
     };
     return (<>
@@ -28,7 +28,7 @@ export default function Variety() {
         {(mode === "add" || mode === "edit") && (
             <VarietyForm
                 mode={mode}
-                cropData={editingGroup}
+                varietyData={editingVariety}
                 onBack={handleBack}
             />
         )}

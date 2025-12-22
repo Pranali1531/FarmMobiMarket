@@ -19,6 +19,8 @@ import { useSelector } from "react-redux";
 import { getCropApi } from "@/api/cropMaster";
 import { closeSnackbar, enqueueSnackbar } from "notistack";
 import { deleteCropApi } from "@/api/cropMaster";
+import { getVarietyApi } from "@/api/varietyMaster";
+import { deleteVarietyApi } from "@/api/varietyMaster";
 
 export default function VarietyList({ onAdd, onEdit }) {
   const navigate = useNavigate();
@@ -51,7 +53,7 @@ const user = useSelector((state) => state.auth.user);
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const [selectedCrop, setSelectedCrop] = useState(null);
+  const [selectedVarity, setSelectedVariety] = useState(null);
 
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -89,7 +91,7 @@ const user = useSelector((state) => state.auth.user);
   
         
     { Header: "Variety Name ", accessor: "varietyName", width: "30%" },
-  { Header: "Crop Name", accessor: "cropName", width: "30%" },
+    { Header: "Crop Name", accessor: "cropName", width: "30%" },
     { Header: "Crop Type", accessor: "cropType", width: "30%" },
     { Header: "Created By", accessor: "createdBy", width: "10%" },
     { Header: "Actions", accessor: "actions", width: "10%" },
@@ -151,7 +153,7 @@ const user = useSelector((state) => state.auth.user);
       <>
         <IconButton
           onClick={(event) => {
-            setSelectedCrop(variety);
+            setSelectedVariety(variety);
             setAnchorEl(event.currentTarget);
           }}
           size="small"
@@ -166,25 +168,17 @@ const user = useSelector((state) => state.auth.user);
         >
           <MenuItem
             onClick={() => {
-              onEdit(selectedCrop);
+              onEdit(selectedVarity);
               handleClose();
             }}
           >
             Edit
           </MenuItem>
-          {/* <MenuItem
-            onClick={() => {
-              setDetailData(user);
-              setShowDetail(true);
-              handleClose();
-            }}
-          >
-            View
-          </MenuItem> */}
+          
 
           <MenuItem onClick={() => {
               setAnchorEl(null);
-              confirmDeleteSnackbar(selectedCrop?.cropId);
+              confirmDeleteSnackbar(selectedVarity?.varietyId);
             }}>Delete</MenuItem>
         </Menu>
       </>
@@ -197,7 +191,7 @@ const user = useSelector((state) => state.auth.user);
       try {
         const res = await deleteVarietyApi(id);
   
-        enqueueSnackbar(res?.message || "Learning Group deleted successfully", {
+        enqueueSnackbar(res?.message || "Varieties deleted successfully", {
           variant: "success",
         });
   
@@ -208,7 +202,7 @@ const user = useSelector((state) => state.auth.user);
     };
 
     const confirmDeleteSnackbar = (id) => {
-        enqueueSnackbar("Are you sure you want to delete this Learning Group?", {
+        enqueueSnackbar("Are you sure you want to delete this Variety?", {
           variant: "default",
           persist: true,
           action: (snackbarId) => (

@@ -47,6 +47,6 @@ export const VarietyPostApi = async (payload) => {
 
 
 export const VarietyUpdateApi = async (payload) => {
-  const res = await http.put("/variety/", payload);
+  const res = await http.patch("/variety/", payload);
   return res.data;
 };
