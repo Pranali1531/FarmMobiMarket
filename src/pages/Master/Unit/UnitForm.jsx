@@ -185,6 +185,7 @@ export default function UnitForm({ mode, unitData, onBack }) {
                         value={form.unitAbbr}
                         onChange={handleChange}
                         style={inputStyle}
+                        required
                     />
                 </Grid>
 
@@ -199,6 +200,7 @@ export default function UnitForm({ mode, unitData, onBack }) {
                         value={form.unitName}
                         onChange={handleChange}
                         style={inputStyle}
+                        required
                     />
                 </Grid>
 
@@ -213,6 +215,7 @@ export default function UnitForm({ mode, unitData, onBack }) {
                         value={form.conversionRatio}
                         onChange={handleChange}
                         style={inputStyle}
+                        required
                     />
                 </Grid>
 
@@ -227,6 +230,7 @@ export default function UnitForm({ mode, unitData, onBack }) {
                         value={form.baseUnit}
                         onChange={handleChange}
                         style={inputStyle}
+                        required
                     />
                 </Grid>
             </Grid>

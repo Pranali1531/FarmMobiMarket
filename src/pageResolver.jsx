@@ -41,6 +41,9 @@ import MasterLearningVideo from "@/pages/Master/LearningVideo";
 import Crop from "@/pages/Master/Crop";
 import Variety from "@/pages/Master/Variety";
 import Unit from "@/pages/Master/Unit";
+import Department from "@/pages/Master/Department";
+import Designation from "@/pages/Master/Designation";
+import DiseasePest from "@/pages/Master/DiseasePest";
 
 const componentMap = {
   DashboardOverview,
@@ -67,6 +70,9 @@ const componentMap = {
   Crop,
   Variety,
   Unit,
+  Department,
+  Designation,
+  DiseasePest,
 };
 const ComingSoon = () => <div>Coming Soon...</div>;
 

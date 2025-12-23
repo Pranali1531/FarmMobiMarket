@@ -238,6 +238,7 @@ export default function CropForm({ mode, cropData, onBack }) {
             value={form.cropTypeId}
             onChange={handleChange}
             style={inputStyle}
+         
           >
             <option value="">Select Crop Type</option>
             {cropType?.map((c) => (
@@ -260,6 +261,7 @@ export default function CropForm({ mode, cropData, onBack }) {
             value={form.cropName}
             onChange={handleChange}
             style={inputStyle}
+            required
           />
         </Grid>
 
@@ -274,6 +276,7 @@ export default function CropForm({ mode, cropData, onBack }) {
             value={form.cropCode}
             onChange={handleChange}
             style={inputStyle}
+            required
           />
         </Grid>
 
@@ -289,6 +292,7 @@ export default function CropForm({ mode, cropData, onBack }) {
             value={form.cropDuration}
             onChange={handleChange}
             style={inputStyle}
+            required
           />
         </Grid>
 
@@ -303,6 +307,7 @@ export default function CropForm({ mode, cropData, onBack }) {
             value={form.cropProduction}
             onChange={handleChange}
             style={inputStyle}
+            required
           />
         </Grid>
 

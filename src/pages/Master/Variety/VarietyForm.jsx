@@ -241,6 +241,7 @@ export default function VarietyForm({ mode, varietyData, onBack }) {
             value={form.varietyName}
             onChange={handleChange}
             style={inputStyle}
+            required
           />
         </Grid>
 
@@ -255,6 +256,7 @@ export default function VarietyForm({ mode, varietyData, onBack }) {
             value={form.varietyCode}
             onChange={handleChange}
             style={inputStyle}
+            required
           />
         </Grid>
 
@@ -270,6 +272,7 @@ export default function VarietyForm({ mode, varietyData, onBack }) {
             value={form.cropDuration}
             onChange={handleChange}
             style={inputStyle}
+            required
           />
         </Grid>
 
@@ -284,6 +287,7 @@ export default function VarietyForm({ mode, varietyData, onBack }) {
             value={form.productionPerArea}
             onChange={handleChange}
             style={inputStyle}
+            required
           />
         </Grid>
 
@@ -318,6 +322,7 @@ export default function VarietyForm({ mode, varietyData, onBack }) {
             value={form.avgDaysToHarvest}
             onChange={handleChange}
             style={inputStyle}
+            required
           />
         </Grid>
 
