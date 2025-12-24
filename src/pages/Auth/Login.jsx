@@ -92,6 +92,28 @@ const staticMenuJson = [
       },
 
       {
+        name: "Country",
+        key: "country",
+        route: "/master/countries",
+        component: "Country",
+      },
+
+
+      {
+        name: "State",
+        key: "state",
+        route: "/master/states",
+        component: "State",
+      },
+
+       {
+        name: "LGALocation ",
+        key: "lgalocation ",
+        route: "/master/lgalocation",
+        component: "LGALocation ",
+      },
+
+      {
         name: "DiseasePest",
         key: "diseasePest",
         route: "/master/diseasePests",

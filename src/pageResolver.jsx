@@ -44,6 +44,10 @@ import Unit from "@/pages/Master/Unit";
 import Department from "@/pages/Master/Department";
 import Designation from "@/pages/Master/Designation";
 import DiseasePest from "@/pages/Master/DiseasePest";
+import Country from "@/pages/Master/Country";
+import State from "@/pages/Master/State";
+
+import LGALocation from "@/pages/Master/LGALocation";
 
 const componentMap = {
   DashboardOverview,
@@ -73,6 +77,9 @@ const componentMap = {
   Department,
   Designation,
   DiseasePest,
+  Country,
+  State,
+  LGALocation,
 };
 const ComingSoon = () => <div>Coming Soon...</div>;
 
