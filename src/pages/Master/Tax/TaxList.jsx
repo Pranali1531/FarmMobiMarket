@@ -13,26 +13,23 @@ import MDBox from "@/components/MDBox";
 import MDTypography from "@/components/MDTypography";
 import DataTable from "@/examples/Tables/DataTable";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import DetailViewModal from "@/components/DetailViewModal";
 import { useSelector } from "react-redux";
 import { closeSnackbar, enqueueSnackbar } from "notistack";
 import { getTaxApi } from "@/api/taxMaster";
 import { deleteTaxApi } from "@/api/taxMaster";
 
-
-
 export default function TaxList({ onAdd, onEdit }) {
   const navigate = useNavigate();
-const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user);
   const [tax, setTax] = useState([]);
   const [loading, setLoading] = useState(false);
-  
-  
+
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const [selectedTax, setselectedTax] = useState(null);
+  const [selectedTax, setSelectedTax] = useState(null);
 
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,7 +39,7 @@ const user = useSelector((state) => state.auth.user);
   // -------------------------
   //  FILTER LOGIC
   // -------------------------
-  const filteredTax= useMemo(() => {
+  const filteredTax = useMemo(() => {
     let data = tax;
 
     if (searchText.trim() !== "") {
@@ -50,8 +47,6 @@ const user = useSelector((state) => state.auth.user);
         u.taxName.toLowerCase().includes(searchText.toLowerCase())
       );
     }
-
- 
 
     return data;
   }, [searchText, tax]);
@@ -68,7 +63,7 @@ const user = useSelector((state) => state.auth.user);
   const columns = [
     { Header: "Tax Name", accessor: "taxName", width: "20%" },
     { Header: "Tax Percentage", accessor: "taxPercentage", width: "20%" },
-   
+
     { Header: "Actions", accessor: "actions", width: "10%" },
   ];
 
@@ -76,7 +71,6 @@ const user = useSelector((state) => state.auth.user);
   // ACTION MENU
   // -------------------------
   const [anchorEl, setAnchorEl] = useState(null);
-
 
   const open = Boolean(anchorEl);
 
@@ -104,20 +98,19 @@ const user = useSelector((state) => state.auth.user);
         </MDTypography>
       </MDBox>
     ),
-   taxPercentage: (
+    taxPercentage: (
       <MDTypography variant="button" color="text">
         {tax.taxPercentage}
       </MDTypography>
     ),
-    
-    
+
     actions: (
       <>
         <IconButton
           onClick={(event) => {
-            setselectedTax(tax);
+            setSelectedTax(tax);
             console.log(tax);
-            
+
             setAnchorEl(event.currentTarget);
           }}
           size="small"
@@ -125,8 +118,7 @@ const user = useSelector((state) => state.auth.user);
           <MoreVertIcon />
         </IconButton>
 
-   
-          <Menu
+        <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
@@ -139,99 +131,98 @@ const user = useSelector((state) => state.auth.user);
           >
             Edit
           </MenuItem>
-          
 
-          <MenuItem onClick={() => {
+          <MenuItem
+            onClick={() => {
               setAnchorEl(null);
-              confirmDeleteSnackbar(selectedTax?.taxId,user.orgId);
-            }}>Delete</MenuItem>
+              confirmDeleteSnackbar(selectedTax?.taxId, user.orgId);
+            }}
+          >
+            Delete
+          </MenuItem>
         </Menu>
       </>
     ),
   }));
 
-
-
   useEffect(() => {
-      fetchTaxList();
-    }, []);
-  
-    const fetchTaxList = async () => {
-      setLoading(true);
-      try {
-        const params = {
-          orgId: user.orgId,
-        };
-        const res = await getTaxApi(params);
-  
-        const list = res?.data || [];
-  
-        setTax(list);
-      } catch (error) {
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchTaxList();
+  }, []);
 
-
-
-  const handleDelete = async (id,orgId) => {
-      if (!id) return;
-  
-      try {
-        const res = await deleteTaxApi(id,orgId);
-  
-        enqueueSnackbar(res?.message || "Unit deleted successfully", {
-          variant: "success",
-        });
-  
-        fetchTaxList();
-      } catch (error) {
-        enqueueSnackbar(error.message, { variant: "error" });
-      }
-    };
-
-    const confirmDeleteSnackbar = (id,orgId) => {
-        enqueueSnackbar("Are you sure you want to delete this tax?", {
-          variant: "default",
-          persist: true,
-          action: (snackbarId) => (
-            <>
-              <button
-                onClick={() => {
-                  handleDelete(id,orgId);
-                  closeSnackbar(snackbarId);
-                }}
-                style={{
-                  background: "#d32f2f",
-                  color: "#fff",
-                  border: "none",
-                  padding: "6px 12px",
-                  marginRight: "8px",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                }}
-              >
-                Yes
-              </button>
-    
-              <button
-                onClick={() => closeSnackbar(snackbarId)}
-                style={{
-                  background: "#9e9e9e",
-                  color: "#fff",
-                  border: "none",
-                  padding: "6px 12px",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                }}
-              >
-                No
-              </button>
-            </>
-          ),
-        });
+  const fetchTaxList = async () => {
+    setLoading(true);
+    try {
+      const params = {
+        orgId: user.orgId,
       };
+      const res = await getTaxApi(params);
+
+      const list = res?.data || [];
+
+      setTax(list);
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id, orgId) => {
+    if (!id) return;
+
+    try {
+      const res = await deleteTaxApi(id, orgId);
+
+      enqueueSnackbar(res?.message || "Unit deleted successfully", {
+        variant: "success",
+      });
+
+      fetchTaxList();
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: "error" });
+    }
+  };
+
+  const confirmDeleteSnackbar = (id, orgId) => {
+    enqueueSnackbar("Are you sure you want to delete this tax?", {
+      variant: "default",
+      persist: true,
+      action: (snackbarId) => (
+        <>
+          <button
+            onClick={() => {
+              handleDelete(id, orgId);
+              closeSnackbar(snackbarId);
+            }}
+            style={{
+              background: "#d32f2f",
+              color: "#fff",
+              border: "none",
+              padding: "6px 12px",
+              marginRight: "8px",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            Yes
+          </button>
+
+          <button
+            onClick={() => closeSnackbar(snackbarId)}
+            style={{
+              background: "#9e9e9e",
+              color: "#fff",
+              border: "none",
+              padding: "6px 12px",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            No
+          </button>
+        </>
+      ),
+    });
+  };
   // ----------------------------------
   //  UI COMPONENT
   // ----------------------------------
@@ -255,7 +246,6 @@ const user = useSelector((state) => state.auth.user);
             />
           </Grid>
           <Grid item xs={12} md={4}></Grid>
-          
 
           <Grid item xs={12} md={4} textAlign="right">
             <button
@@ -315,8 +305,8 @@ const user = useSelector((state) => state.auth.user);
 
             <MDTypography variant="button" color="text">
               Showing {startIndex + 1} to{" "}
-              {Math.min(endIndex, filteredTax.length)} of{" "}
-              {filteredTax.length} entries
+              {Math.min(endIndex, filteredTax.length)} of {filteredTax.length}{" "}
+              entries
             </MDTypography>
           </MDBox>
 

@@ -20,15 +20,12 @@ import { closeSnackbar, enqueueSnackbar } from "notistack";
 import { deleteLgaLocationApi } from "@/api/lgaMaster";
 import { getLgaLocationApi } from "@/api/lgaMaster";
 
-
-
-
 export default function LGALocationList({ onAdd, onEdit }) {
   const navigate = useNavigate();
-const user = useSelector((state) => state.auth.user);
- 
+  const user = useSelector((state) => state.auth.user);
+
   const [loading, setLoading] = useState(false);
-  
+
   const [lgaLocation, setLgaLocation] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -43,16 +40,14 @@ const user = useSelector((state) => state.auth.user);
   // -------------------------
   //  FILTER LOGIC
   // -------------------------
-  const filteredLgaLocation= useMemo(() => {
-    let data =lgaLocation;
+  const filteredLgaLocation = useMemo(() => {
+    let data = lgaLocation;
 
     if (searchText.trim() !== "") {
       data = data.filter((u) =>
         u.stateName.toLowerCase().includes(searchText.toLowerCase())
       );
     }
-
- 
 
     return data;
   }, [searchText, lgaLocation]);
@@ -66,7 +61,6 @@ const user = useSelector((state) => state.auth.user);
   // TABLE COLUMNS
   // -------------------------
   const columns = [
-   
     { Header: "State Name", accessor: "stateId", width: "30%" },
     { Header: "LGA", accessor: "lga", width: "30%" },
     { Header: "Actions", accessor: "actions", width: "10%" },
@@ -95,10 +89,7 @@ const user = useSelector((state) => state.auth.user);
   // TABLE ROWS
   // -------------------------
   const rows = paginatedLgaLocation.map((state) => ({
-    
-  
-
-     stateId: (
+    stateId: (
       <MDTypography variant="button" color="text">
         {state.stateId}
       </MDTypography>
@@ -109,14 +100,14 @@ const user = useSelector((state) => state.auth.user);
         {state.lga}
       </MDTypography>
     ),
-    
+
     actions: (
       <>
         <IconButton
           onClick={(event) => {
             setSelectedLgaLocation(state);
             console.log(state);
-            
+
             setAnchorEl(event.currentTarget);
           }}
           size="small"
@@ -124,8 +115,7 @@ const user = useSelector((state) => state.auth.user);
           <MoreVertIcon />
         </IconButton>
 
-   
-          <Menu
+        <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
@@ -138,99 +128,98 @@ const user = useSelector((state) => state.auth.user);
           >
             Edit
           </MenuItem>
-          
 
-          <MenuItem onClick={() => {
+          <MenuItem
+            onClick={() => {
               setAnchorEl(null);
-              confirmDeleteSnackbar(selectedLgaLocation?.stateId,user.orgId);
-            }}>Delete</MenuItem>
+              confirmDeleteSnackbar(selectedLgaLocation?.stateId, user.orgId);
+            }}
+          >
+            Delete
+          </MenuItem>
         </Menu>
       </>
     ),
   }));
 
-
-
   useEffect(() => {
-      fetchLgaLocationList();
-    }, []);
-  
-    const fetchLgaLocationList = async () => {
-      setLoading(true);
-      try {
-        const params = {
-          orgId: user.orgId,
-        };
-        const res = await getLgaLocationApi(params);
-  
-        const list = res?.data || [];
-  
-        lgaLocation(list);
-      } catch (error) {
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchLgaLocationList();
+  }, []);
 
-
-
-  const handleDelete = async (id,orgId) => {
-      if (!id) return;
-  
-      try {
-        const res = await deleteLgaLocationApi(id,orgId);
-  
-        enqueueSnackbar(res?.message || "LGA Location deleted successfully", {
-          variant: "success",
-        });
-  
-        fetchLgaLocationList();
-      } catch (error) {
-        enqueueSnackbar(error.message, { variant: "error" });
-      }
-    };
-
-    const confirmDeleteSnackbar = (id,orgId) => {
-        enqueueSnackbar("Are you sure you want to delete this LGA Location?", {
-          variant: "default",
-          persist: true,
-          action: (snackbarId) => (
-            <>
-              <button
-                onClick={() => {
-                  handleDelete(id,orgId);
-                  closeSnackbar(snackbarId);
-                }}
-                style={{
-                  background: "#d32f2f",
-                  color: "#fff",
-                  border: "none",
-                  padding: "6px 12px",
-                  marginRight: "8px",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                }}
-              >
-                Yes
-              </button>
-    
-              <button
-                onClick={() => closeSnackbar(snackbarId)}
-                style={{
-                  background: "#9e9e9e",
-                  color: "#fff",
-                  border: "none",
-                  padding: "6px 12px",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                }}
-              >
-                No
-              </button>
-            </>
-          ),
-        });
+  const fetchLgaLocationList = async () => {
+    setLoading(true);
+    try {
+      const params = {
+        orgId: user.orgId,
       };
+      const res = await getLgaLocationApi(params);
+
+      const list = res?.data || [];
+
+      setLgaLocation(list);
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id, orgId) => {
+    if (!id) return;
+
+    try {
+      const res = await deleteLgaLocationApi(id, orgId);
+
+      enqueueSnackbar(res?.message || "LGA Location deleted successfully", {
+        variant: "success",
+      });
+
+      fetchLgaLocationList();
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: "error" });
+    }
+  };
+
+  const confirmDeleteSnackbar = (id, orgId) => {
+    enqueueSnackbar("Are you sure you want to delete this LGA Location?", {
+      variant: "default",
+      persist: true,
+      action: (snackbarId) => (
+        <>
+          <button
+            onClick={() => {
+              handleDelete(id, orgId);
+              closeSnackbar(snackbarId);
+            }}
+            style={{
+              background: "#d32f2f",
+              color: "#fff",
+              border: "none",
+              padding: "6px 12px",
+              marginRight: "8px",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            Yes
+          </button>
+
+          <button
+            onClick={() => closeSnackbar(snackbarId)}
+            style={{
+              background: "#9e9e9e",
+              color: "#fff",
+              border: "none",
+              padding: "6px 12px",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            No
+          </button>
+        </>
+      ),
+    });
+  };
   // ----------------------------------
   //  UI COMPONENT
   // ----------------------------------
@@ -253,8 +242,7 @@ const user = useSelector((state) => state.auth.user);
               }}
             />
           </Grid>
-<Grid item xs={12} md={4}></Grid>
-          
+          <Grid item xs={12} md={4}></Grid>
 
           <Grid item xs={12} md={4} textAlign="right">
             <button
@@ -322,7 +310,9 @@ const user = useSelector((state) => state.auth.user);
           {/* RIGHT: Pagination buttons */}
           <MDBox display="flex" alignItems="center" gap={1} mb={2}>
             {[
-              ...Array(Math.ceil(filteredLgaLocation.length / entriesPerPage)).keys(),
+              ...Array(
+                Math.ceil(filteredLgaLocation.length / entriesPerPage)
+              ).keys(),
             ].map((i) => (
               <button
                 key={i}
