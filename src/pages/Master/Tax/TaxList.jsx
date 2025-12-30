@@ -13,27 +13,26 @@ import MDBox from "@/components/MDBox";
 import MDTypography from "@/components/MDTypography";
 import DataTable from "@/examples/Tables/DataTable";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import DetailViewModal from "@/components/DetailViewModal";
 import { useSelector } from "react-redux";
 import { closeSnackbar, enqueueSnackbar } from "notistack";
-import { deleteLgaLocationApi } from "@/api/lgaMaster";
-import { getLgaLocationApi } from "@/api/lgaMaster";
+import { getTaxApi } from "@/api/taxMaster";
+import { deleteTaxApi } from "@/api/taxMaster";
 
 
 
-
-export default function LGALocationList({ onAdd, onEdit }) {
+export default function TaxList({ onAdd, onEdit }) {
   const navigate = useNavigate();
 const user = useSelector((state) => state.auth.user);
- 
+  const [tax, setTax] = useState([]);
   const [loading, setLoading] = useState(false);
   
-  const [lgaLocation, setLgaLocation] = useState([]);
+  
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const [selectedLgaLocation, setSelectedLgaLocation] = useState(null);
+  const [selectedTax, setselectedTax] = useState(null);
 
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,32 +42,33 @@ const user = useSelector((state) => state.auth.user);
   // -------------------------
   //  FILTER LOGIC
   // -------------------------
-  const filteredLgaLocation= useMemo(() => {
-    let data =lgaLocation;
+  const filteredTax= useMemo(() => {
+    let data = tax;
 
     if (searchText.trim() !== "") {
       data = data.filter((u) =>
-        u.stateName.toLowerCase().includes(searchText.toLowerCase())
+        u.taxName.toLowerCase().includes(searchText.toLowerCase())
       );
     }
 
  
 
     return data;
-  }, [searchText, lgaLocation]);
+  }, [searchText, tax]);
 
   // PAGINATION CALC
   const startIndex = (currentPage - 1) * entriesPerPage;
   const endIndex = startIndex + entriesPerPage;
-  const paginatedLgaLocation = filteredLgaLocation.slice(startIndex, endIndex);
+
+  const paginatedTax = filteredTax.slice(startIndex, endIndex);
 
   // -------------------------
   // TABLE COLUMNS
   // -------------------------
   const columns = [
+    { Header: "Tax Name", accessor: "taxName", width: "20%" },
+    { Header: "Tax Percentage", accessor: "taxPercentage", width: "20%" },
    
-    { Header: "State Name", accessor: "stateId", width: "30%" },
-    { Header: "LGA", accessor: "lga", width: "30%" },
     { Header: "Actions", accessor: "actions", width: "10%" },
   ];
 
@@ -76,6 +76,8 @@ const user = useSelector((state) => state.auth.user);
   // ACTION MENU
   // -------------------------
   const [anchorEl, setAnchorEl] = useState(null);
+
+
   const open = Boolean(anchorEl);
 
   const handleClick = (event) => {
@@ -94,28 +96,27 @@ const user = useSelector((state) => state.auth.user);
   // -------------------------
   // TABLE ROWS
   // -------------------------
-  const rows = paginatedLgaLocation.map((state) => ({
+  const rows = paginatedTax.map((tax) => ({
+    taxName: (
+      <MDBox display="flex" alignItems="center" gap={2}>
+        <MDTypography variant="button" fontWeight="medium">
+          {tax.taxName}
+        </MDTypography>
+      </MDBox>
+    ),
+   taxPercentage: (
+      <MDTypography variant="button" color="text">
+        {tax.taxPercentage}
+      </MDTypography>
+    ),
     
-  
-
-     stateId: (
-      <MDTypography variant="button" color="text">
-        {state.stateId}
-      </MDTypography>
-    ),
-
-    lga: (
-      <MDTypography variant="button" color="text">
-        {state.lga}
-      </MDTypography>
-    ),
     
     actions: (
       <>
         <IconButton
           onClick={(event) => {
-            setSelectedLgaLocation(state);
-            console.log(state);
+            setselectedTax(tax);
+            console.log(tax);
             
             setAnchorEl(event.currentTarget);
           }}
@@ -132,7 +133,7 @@ const user = useSelector((state) => state.auth.user);
         >
           <MenuItem
             onClick={() => {
-              onEdit(selectedLgaLocation);
+              onEdit(selectedTax);
               setAnchorEl(null);
             }}
           >
@@ -142,7 +143,7 @@ const user = useSelector((state) => state.auth.user);
 
           <MenuItem onClick={() => {
               setAnchorEl(null);
-              confirmDeleteSnackbar(selectedLgaLocation?.stateId,user.orgId);
+              confirmDeleteSnackbar(selectedTax?.taxId,user.orgId);
             }}>Delete</MenuItem>
         </Menu>
       </>
@@ -152,20 +153,20 @@ const user = useSelector((state) => state.auth.user);
 
 
   useEffect(() => {
-      fetchLgaLocationList();
+      fetchTaxList();
     }, []);
   
-    const fetchLgaLocationList = async () => {
+    const fetchTaxList = async () => {
       setLoading(true);
       try {
         const params = {
           orgId: user.orgId,
         };
-        const res = await getLgaLocationApi(params);
+        const res = await getTaxApi(params);
   
         const list = res?.data || [];
   
-        lgaLocation(list);
+        setTax(list);
       } catch (error) {
       } finally {
         setLoading(false);
@@ -178,20 +179,20 @@ const user = useSelector((state) => state.auth.user);
       if (!id) return;
   
       try {
-        const res = await deleteLgaLocationApi(id,orgId);
+        const res = await deleteTaxApi(id,orgId);
   
-        enqueueSnackbar(res?.message || "LGA Location deleted successfully", {
+        enqueueSnackbar(res?.message || "Unit deleted successfully", {
           variant: "success",
         });
   
-        fetchLgaLocationList();
+        fetchTaxList();
       } catch (error) {
         enqueueSnackbar(error.message, { variant: "error" });
       }
     };
 
     const confirmDeleteSnackbar = (id,orgId) => {
-        enqueueSnackbar("Are you sure you want to delete this LGA Location?", {
+        enqueueSnackbar("Are you sure you want to delete this tax?", {
           variant: "default",
           persist: true,
           action: (snackbarId) => (
@@ -242,7 +243,7 @@ const user = useSelector((state) => state.auth.user);
           <Grid item xs={12} md={4}>
             <input
               type="text"
-              placeholder=" Search LGA Location..."
+              placeholder=" Search Tax..."
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               style={{
@@ -253,7 +254,7 @@ const user = useSelector((state) => state.auth.user);
               }}
             />
           </Grid>
-<Grid item xs={12} md={4}></Grid>
+          <Grid item xs={12} md={4}></Grid>
           
 
           <Grid item xs={12} md={4} textAlign="right">
@@ -268,7 +269,7 @@ const user = useSelector((state) => state.auth.user);
               }}
               onClick={onAdd}
             >
-              + Add LGA Location
+              + Add Tax
             </button>
           </Grid>
         </Grid>
@@ -314,15 +315,15 @@ const user = useSelector((state) => state.auth.user);
 
             <MDTypography variant="button" color="text">
               Showing {startIndex + 1} to{" "}
-              {Math.min(endIndex, filteredLgaLocation.length)} of{" "}
-              {filteredLgaLocation.length} entries
+              {Math.min(endIndex, filteredTax.length)} of{" "}
+              {filteredTax.length} entries
             </MDTypography>
           </MDBox>
 
           {/* RIGHT: Pagination buttons */}
           <MDBox display="flex" alignItems="center" gap={1} mb={2}>
             {[
-              ...Array(Math.ceil(filteredLgaLocation.length / entriesPerPage)).keys(),
+              ...Array(Math.ceil(filteredTax.length / entriesPerPage)).keys(),
             ].map((i) => (
               <button
                 key={i}

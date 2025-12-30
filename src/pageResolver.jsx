@@ -48,6 +48,8 @@ import Country from "@/pages/Master/Country";
 import State from "@/pages/Master/State";
 
 import LGALocation from "@/pages/Master/LGALocation";
+import Village from "@/pages/Master/Village";
+import Tax from "@/pages/Master/Tax";
 
 const componentMap = {
   DashboardOverview,
@@ -80,6 +82,8 @@ const componentMap = {
   Country,
   State,
   LGALocation,
+  Village,
+  Tax
 };
 const ComingSoon = () => <div>Coming Soon...</div>;
 

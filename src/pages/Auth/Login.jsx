@@ -106,11 +106,24 @@ const staticMenuJson = [
         component: "State",
       },
 
+      {
+        name: "Tax",
+        key: "tax",
+        route: "/master/tax",
+        component: "Tax",
+      },
+
        {
-        name: "LGALocation ",
-        key: "lgalocation ",
-        route: "/master/lgalocation",
-        component: "LGALocation ",
+        name: "LGA Location ",
+        key: "lgaLocation ",
+        route: "/master/lgaLocation",
+        component: "LGALocation",
+      },
+      {
+        name: "Village",
+        key: "village",
+        route: "/master/village",
+        component: "Village",
       },
 
       {
